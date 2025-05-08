@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .accepted {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .rejected {
+            background-color: #f44336;
+            color: white;
+        }
+        .pending {
+            background-color: #ff9800;
+            color: white;
+        }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registrations Report</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Event</th>
+            <th>Registration Date</th>
+            <th>Status</th>
+        </tr>
+        {% for reg in registrations %}
+        <tr>
+            <td>{{ reg[0] }}</td>
+            <td>{{ reg[1] }}</td>
+            <td>{{ reg[2] }}</td>
+            <td>
+                <span class="status {{ reg[3]|lower }}">{{ reg[3] }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

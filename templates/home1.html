@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management System</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        h1, h2 {
+            color: #343a40;
+            font-weight: 600;
+        }
+        .event-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .event-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .card-title {
+            color: #007bff;
+        }
+        .btn-create, .btn-register {
+            transition: background-color 0.3s ease;
+        }
+        .btn-create {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-create:hover {
+            background-color: #218838;
+        }
+        .btn-register {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-register:hover {
+            background-color: #0056b3;
+        }
+        .btn-report {
+            background-color: #ffc107;
+            color: black;
+        }
+        .btn-report:hover {
+            background-color: #e0a800;
+        }
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #343a40;
+            color: white;
+            margin-top: 50px;
+        }
+        /* Form & Cards */
+        .form-container {
+            padding: 40px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+        /* For smoother mobile responsiveness */
+        .event-card-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        @media (max-width: 576px) {
+            .form-container {
+                padding: 30px;
+            }
+            .event-card-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">🎉 Event Management System</h1>
+
+    <!-- View Registration Report Button -->
+    <div class="text-end mb-4">
+        <a href="/report" class="btn btn-report">📊 View Registration Report</a>
+    </div>
+
+    <!-- Event List -->
+    <h2 class="mb-3">Upcoming Events</h2>
+    <div class="event-card-wrapper">
+        {% if events %}
+            {% for event in events %}
+                <div class="event-card">
+                    <div class="card shadow-sm rounded">
+                        <img src="image.png" class="card-img-top" alt="Event image">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ event[1] }}</h5>
+                            <p class="card-text">{{ event[2] }}</p>
+                            <p class="text-muted">
+                                <strong>Date:</strong> {{ event[3] }} <br>
+                                <strong>Location:</strong> {{ event[4] }}
+                            </p>
+                            <a href="/register/{{ event[0] }}" class="btn btn-register">Register</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No events available yet. Add one below!</p>
+        {% endif %}
+    </div>
+
+    <!-- Create Event Form -->
+    <h2 class="mt-5 mb-3">Create New Event</h2>
+    <div class="form-container">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label">Event Name</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="Event name" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" id="description" class="form-control" placeholder="Event description" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" name="date" id="date" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" name="location" id="location" class="form-control" placeholder="Event location" required>
+            </div>
+            <button type="submit" class="btn btn-create">Create Event</button>
+        </form>
+    </div>
+
+</div>
+
+<!-- Footer Section -->
+<div class="footer">
+    <p>&copy; 2025 Event Management System | All rights reserved.</p>
+</div>
+
+<!-- Bootstrap JS (Optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Scroll effect for smooth page transition
+    document.querySelectorAll('a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: document.querySelector(this.getAttribute('href')).offsetTop,
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+</body>
+</html>

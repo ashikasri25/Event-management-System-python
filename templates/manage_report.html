@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Registrations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+        form {
+            display: flex;
+            gap: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button[value="Accepted"] {
+            background-color: #4CAF50;
+        }
+        button[value="Rejected"] {
+            background-color: #f44336;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manage Event Registrations</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Event</th>
+            <th>Registration Date</th>
+            <th>Action</th>
+        </tr>
+        {% for reg in registrations %}
+        <tr>
+            <td>{{ reg[0] }}</td>
+            <td>{{ reg[1] }}</td>
+            <td>{{ reg[2] }}</td>
+            <td>
+                {% if reg[3] == 'Pending' %}
+                <form method="POST" action="{{ url_for('update_status', registration_id=reg[4]) }}">
+                    <button type="submit" name="status" value="Accepted">Accept</button>
+                    <button type="submit" name="status" value="Rejected">Reject</button>
+                </form>
+                {% else %}
+                <button disabled>{{ reg[3] }}</button>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

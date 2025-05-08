@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9fafb;
+      overflow-x: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      pointer-events: none;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+    }
+
+    .navbar {
+      background-color: #4f46e5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .hero {
+      background-image: linear-gradient(120deg, #4f46e5, #9333ea);
+      color: white;
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #2563eb;
+      border: none;
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .filter, .create-event, .brands, .blog {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 6px;
+      margin: 0 10px;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: inline-block;
+      margin: 20px;
+      width: 300px;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .event-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .p-3 {
+      padding: 20px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      width: 500px;
+      max-width: 90%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .modal input, .modal textarea, .modal button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    .modal button {
+      background-color: #2563eb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background-color: #1d4ed8;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .filters-form, .event-form {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      margin: 0 auto;
+    }
+    .filters-form select, .filters-form input, .event-form select, .event-form input, .event-form textarea {
+      margin-bottom: 15px;
+    }
+
+    footer {
+      background-color: #111827;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+
+<!-- Navbar -->
+<div class="navbar">
+  <h2 style="color:white;">EventX</h2>
+  <ul class="nav-links">
+    <a href="{{ url_for('signup') }}">Signup</a>
+    <a href="{{ url_for('login') }}">Login</a>
+    <li><a href="{{ url_for('report') }}">View Report</a></li>
+    <li><a href="{{ url_for('manage_report') }}">Manage Registrations</a></li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li> <!-- Added Logout link -->
+  </ul>
+</div>
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1> The Kpop Show Ticket Package</h1>
+  <p>Experience the thrill of K-pop with exclusive tickets and more!</p>
+  
+</section>
+
+<!-- Filter Section -->
+
+  <!-- 🔍 Filter Form -->
+  <h2>Filter Events</h2>
+  <form method="GET">
+    <label>Type:</label>
+    <select name="type">
+      <option value="">All</option>
+      <option value="Workshop">Workshop</option>
+      <option value="Seminar">Seminar</option>
+      <option value="Competition">Competition</option>
+      <option value="Webinar">Webinar</option>
+    </select>
+
+    <label>Location:</label>
+    <input type="text" name="location" placeholder="Enter location">
+
+    <label>Month:</label>
+    <select name="month">
+      <option value="">All</option>
+      {% for m in range(1, 13) %}
+        <option value="{{ m }}">{{ m }}</option>
+      {% endfor %}
+    </select>
+
+   
+
+    <button class="btn btn-primary" type="submit">Filter</button>
+  </form>
+</section>
+
+
+<!-- Upcoming Events Section (Dynamic) -->
+<section class="upcoming-events">
+  <h2 style="text-align:center;">Upcoming Events</h2>
+ 
+  {% if events %}
+    {% for event in events %}
+      <div class="event-card">
+       
+        <div class="p-3">
+          <h3>{{ event[1] }}</h3>
+          <p>{{ event[3] }} - {{ event[2] }}</p>
+          <a href="{{ url_for('register', event_id=event[0]) }}">
+            <button class="btn btn-primary">Register</button>
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="text-align:center;">No upcoming events.</p>
+  {% endif %}
+</section>
+
+<!-- Create Event Section -->
+<section class="create-event">
+  <h2>Make Your Own Event</h2>
+  <p>Join thousands of organizers using EventX</p>
+  <button class="btn btn-primary" id="create-event-btn" onclick="openCreateEventModal()">Create Event</button>
+</section>
+
+<!-- Create Event Modal -->
+<div id="create-event-modal" class="modal">
+  <div class="modal-content">
+    <h2>Create an Event</h2>
+    {% if error %}
+      <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    <form action="/" method="POST">
+      <label for="name">Event Name:</label><br>
+      <input type="text" id="name" name="name" placeholder="Event Name" required><br><br>
+      <label for="description">Event Description:</label><br>
+      <textarea id="description" name="description" placeholder="Event Description" required></textarea><br><br>
+      <label for="date">Event Date:</label><br>
+      <input type="date" id="date" name="date" required><br><br>
+      <label for="location">Event Location:</label><br>
+      <input type="text" id="location" name="location" placeholder="Event Location" required><br><br>
+     
+  <label>Type:</label><br>
+  <select name="type" required>
+    <option value="">-- Select Type --</option>
+    <option value="Workshop">Workshop</option>
+    <option value="Seminar">Seminar</option>
+    <option value="Competition">Competition</option>
+    <option value="Webinar">Webinar</option>
+  </select><br><br>
+      <button type="submit" class="btn btn-primary">Create Event</button>
+    </form>
+    <button onclick="closeCreateEventModal()" class="btn btn-outline">Cancel</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer-content">
+  <p>&copy; 2025 EventX. All rights reserved.</p>
+  <p>Follow us on Facebook | Twitter | Instagram</p>
+</footer>
+
+<!-- JavaScript -->
+
+<!-- JavaScript -->
+<script>
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const confetti = [];
+  const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#843b62'];
+
+  let hasConfettiBurst = false; // Flag to ensure one-time burst
+
+  function ConfettiPiece(startX, direction) {
+    this.x = startX;
+    this.y = Math.random() * -canvas.height;
+    this.radius = Math.random() * 6 + 2;
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.speed = Math.random() * 3 + 2;
+    this.wind = direction === 'left' ? Math.random() * 2 + 2 : Math.random() * -2 - 2;  // Left or right direction
+  }
+
+  ConfettiPiece.prototype.draw = function () {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  };
+
+  ConfettiPiece.prototype.update = function () {
+    this.y += this.speed;
+    this.x += this.wind;
+    if (this.y > canvas.height) {
+      this.y = -10;
+      this.x = Math.random() * canvas.width;
+    }
+    this.draw();
+  };
+
+  function initConfetti() {
+    // Left side
+    for (let i = 0; i < 75; i++) {
+      confetti.push(new ConfettiPiece(0, 'left'));
+    }
+    // Right side
+    for (let i = 0; i < 75; i++) {
+      confetti.push(new ConfettiPiece(canvas.width, 'right'));
+    }
+  }
+
+  function animateConfetti() {
+    if (!hasConfettiBurst) return; // Stop if the confetti burst has already occurred
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confetti.forEach(p => p.update());
+    requestAnimationFrame(animateConfetti);
+  }
+
+  function startConfetti() {
+    hasConfettiBurst = true;
+    animateConfetti();
+    
+    // Stop confetti after 5 seconds
+    setTimeout(() => {
+      hasConfettiBurst = false;
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    }, 5000); // 5000ms = 5 seconds
+  }
+
+  window.addEventListener('load', () => {
+    initConfetti();
+    startConfetti(); // Start confetti animation immediately when the page loads
+  });
+
+  function openCreateEventModal() {
+    document.getElementById('create-event-modal').style.display = 'flex';
+  }
+
+  function closeCreateEventModal() {
+    document.getElementById('create-event-modal').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
